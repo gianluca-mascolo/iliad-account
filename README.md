@@ -4,6 +4,8 @@ Uno script Python che si collega a https://www.iliad.it/account/ usando le crede
 
 Lo script è stato creato interamente guidando la IA di Claude da zero dando opportuni prompt di input. In questo caso il lavoro di sviluppo è stato quello di ispezionare la pagina di login coi developer tools per guidare meglio il prompt della IA nelle richieste di ciò che si voleva ottenere.
 
+La creazione iniziale del repository è stata fatta usando i prompt specificati in [claude-creation-prompt.txt](claude-creation-prompt.txt) ed ha richiesto all'incirca un paio d'ore.
+
 ## Installazione
 
 ```bash

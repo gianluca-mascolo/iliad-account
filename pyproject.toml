@@ -12,7 +12,8 @@ dependencies = [
     "requests (>=2.32.0,<3.0.0)",
     "python-dotenv (>=1.2.1,<2.0.0)"
 ]
-[tool.poetry.scripts]
+
+[project.scripts]
 iliad_account = "iliad_account:main"
 
 [dependency-groups]
@@ -26,3 +27,15 @@ dev = [
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"
+
+[tool.black]
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | \.env
+)/
+'''

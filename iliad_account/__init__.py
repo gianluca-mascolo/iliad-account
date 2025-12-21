@@ -10,6 +10,10 @@ from dotenv import load_dotenv
 
 LOGIN_URL = "https://www.iliad.it/account/"
 ACCOUNT_URL = "https://www.iliad.it/account/"
+USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+)
 
 
 def get_credentials() -> tuple[str, str]:
@@ -28,7 +32,9 @@ def get_credentials() -> tuple[str, str]:
     return user_id, password
 
 
-def login(session: requests.Session, user_id: str, password: str, debug: bool = False) -> bool:
+def login(
+    session: requests.Session, user_id: str, password: str, debug: bool = False
+) -> bool:
     """Attempt to login to iliad account."""
     # First, get the login page to capture any cookies/tokens
     response = session.get(LOGIN_URL)
@@ -69,7 +75,9 @@ def login(session: requests.Session, user_id: str, password: str, debug: bool = 
 
     if debug:
         print(f"[DEBUG] Response URL: {response.url}")
-        print(f"[DEBUG] 'conso-progress' in response: {'conso-progress' in response.text}")
+        print(
+            f"[DEBUG] 'conso-progress' in response: {'conso-progress' in response.text}"
+        )
         print(f"[DEBUG] 'Consumi' in response: {'Consumi' in response.text}")
         print(f"[DEBUG] Response snippet: {response.text[:500]}")
 
@@ -91,7 +99,9 @@ def get_progress_value(session: requests.Session) -> str | None:
         return progress_div.get("data-progress-value")
 
     # Try alternative: find any div with class progressbar that has the attribute
-    progress_div = soup.find("div", class_="progressbar", attrs={"data-progress-value": True})
+    progress_div = soup.find(
+        "div", class_="progressbar", attrs={"data-progress-value": True}
+    )
 
     if progress_div:
         return progress_div.get("data-progress-value")
@@ -105,9 +115,7 @@ def main() -> int:
     user_id, password = get_credentials()
 
     session = requests.Session()
-    session.headers.update({
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    })
+    session.headers.update({"User-Agent": USER_AGENT})
 
     debug = os.getenv("DEBUG", "").lower() in ("1", "true", "yes")
 

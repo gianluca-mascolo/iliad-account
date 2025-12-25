@@ -85,12 +85,37 @@ def login(
     return "conso-progress" in response.text or "Consumi" in response.text
 
 
-def get_progress_value(session: requests.Session) -> str | None:
+def get_progress_value(session: requests.Session, debug: bool = False) -> str | None:
     """Fetch the data-progress-value from the account page."""
     response = session.get(ACCOUNT_URL)
     response.raise_for_status()
 
+    if debug:
+        # Dump full HTML to file for analysis
+        with open("iliad_debug_dump.html", "w", encoding="utf-8") as f:
+            f.write(response.text)
+        print("[DEBUG] Full HTML saved to iliad_debug_dump.html")
+
     soup = BeautifulSoup(response.text, "html.parser")
+
+    if debug:
+        # Find all consumption-related sections
+        print("\n[DEBUG] === All progressbar elements ===")
+        for i, div in enumerate(soup.find_all("div", class_="progressbar")):
+            print(f"\n[DEBUG] Progressbar #{i + 1}:")
+            print(f"  id: {div.get('id')}")
+            print(f"  data-progress-value: {div.get('data-progress-value')}")
+            # Show parent context
+            parent = div.find_parent("div", class_="conso__content")
+            if parent:
+                title = parent.find("div", class_="conso__title")
+                if title:
+                    print(f"  title: {title.get_text(strip=True)}")
+
+        print("\n[DEBUG] === All conso__content sections ===")
+        for i, section in enumerate(soup.find_all("div", class_="conso__content")):
+            print(f"\n[DEBUG] Section #{i + 1}:")
+            print(f"  HTML snippet: {str(section)[:500]}...")
 
     # Find the div with id="conso-progress" and class="progressbar"
     progress_div = soup.find("div", id="conso-progress", class_="progressbar")
@@ -132,7 +157,7 @@ def main() -> int:
     print("\nFetching progress value...")
 
     try:
-        progress_value = get_progress_value(session)
+        progress_value = get_progress_value(session, debug=debug)
     except requests.RequestException as e:
         print(f"Error fetching account page: {e}")
         return 1

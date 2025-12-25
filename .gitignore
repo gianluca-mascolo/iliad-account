@@ -85,3 +85,6 @@ dmypy.json
 # OS files
 .DS_Store
 Thumbs.db
+
+# Debug output
+iliad_debug_dump.html
